@@ -1,0 +1,51 @@
+version: "3.8"
+
+x-logs:
+  &default-log
+  driver: "json-file"
+  options:
+    max-size: "300k"
+    max-file: "3"
+
+services:
+  backend:
+    build:
+      context: .
+      target: dev
+      dockerfile: ./docker/php-fpm/Dockerfile
+    logging: *default-log
+    env_file: ./backend/.env
+    volumes:
+    - ./backend:/app:cached
+    environment:
+      OPCACHE_VALIDATE_TIMESTAMPS: 1
+  
+  nginx:
+    build:
+      context: .
+      target: nginx
+      dockerfile: docker/nginx/Dockerfile
+    logging: *default-log
+    ports:
+    - "80:80"
+    environment:
+      BACKEND_HOST: backend:9000
+  
+  db:
+    image: mysql:8.0.28
+    logging: *default-log
+    command: --default-authentication-plugin=mysql_native_password
+    ports:
+    - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: guestbook
+  
+  centrifugo:
+    image: centrifugo/centrifugo:v3.1.1
+    ports:
+    - "8080:8000"
+    logging: *default-log
+    volumes:
+    - ./docker/centrifugo/config.json:/centrifugo/config.json
+    

@@ -1,0 +1,20 @@
+{
+  "token_hmac_secret_key": "secret-key",
+  "api_key": "api-key",
+  "log_level": "debug",
+  "admin": true,
+  "admin_password": "admin-password",
+  "admin_secret": "admin-secret",
+  "allowed_origins": [
+    "*"
+  ],
+  "proxy_http_headers": [
+    "Origin",
+    "User-Agent",
+    "Cookie",
+    "Authorization",
+    "X-Real-Ip",
+    "X-Forwarded-For",
+    "X-Request-Id"
+  ]
+}
